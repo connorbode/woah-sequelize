@@ -4,9 +4,10 @@ var expect = chai.expect;
 var should = chai.should();
 var woah = require('../lib');
 var models = require('./setup/models');
+var db;
 
 beforeEach(done => {
-  var db = woah(models);
+  db = woah(models);
   done();
 });
 
@@ -18,8 +19,12 @@ afterEach(done => {
     });
 });
 
-describe('test', () => {
-  it('tests', () => {
-    expect(true).to.equal(true);
+describe('querying', () => {
+  it('finds a model by id', (done) => {
+    var test = db.Test.create({
+      name: 'Test',
+      age: 12,
+      sex: 'undeclared'
+    });
   });
 });
