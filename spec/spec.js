@@ -21,10 +21,12 @@ afterEach(done => {
 
 describe('querying', () => {
   it('finds a model by id', (done) => {
-    var test = db.Test.create({
-      name: 'Test',
-      age: 12,
-      sex: 'undeclared'
+    db.transaction(function * () {
+      var test = yield db.Test.create({
+        name: 'Test',
+        age: 12,
+        sex: 'undeclared'
+      });
     });
   });
 });
