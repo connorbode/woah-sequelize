@@ -2,7 +2,7 @@
   "development": {
     "storage": "./spec/setup/db.sqlite",
     "dialect": "sqlite",
-    "logging": false
+    "logging": true
   },
   "test": {
     "username": "root",
