@@ -19,14 +19,12 @@ afterEach(done => {
     });
 });
 
-describe('querying', () => {
-  it('finds a model by id', (done) => {
+describe('transactions', () => {
+  it('runs an empty transaction', (done) => {
     db.transaction(function * () {
-      var test = yield db.Test.create({
-        name: 'Test',
-        age: 12,
-        sex: 'undeclared'
-      });
+      
+    }).then(() => {
+      done();
     });
   });
 });
