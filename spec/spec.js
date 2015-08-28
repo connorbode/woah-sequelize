@@ -2,17 +2,17 @@ var chai = require('chai');
 var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should();
-var woah = require('../lib');
-var models = require('./setup/models');
-var db;
+var Woah = require('../lib');
+var db = require('./setup/models');
+var woah;
 
 beforeEach(done => {
-  db = woah(models);
+  woah = Woah(db);
   done();
 });
 
 afterEach(done => {
-  models.Test
+  db.Test
     .destroy({ where: {} })
     .then(() => {
       done();
@@ -21,7 +21,7 @@ afterEach(done => {
 
 describe('transactions', () => {
   it('runs an empty transaction', (done) => {
-    db.transaction(function * () {
+    woah.transaction(function * () {
       
     }).then(() => {
       done();
@@ -29,7 +29,7 @@ describe('transactions', () => {
   });
 
   it('runs a query on an empty db', (done) => {
-    db.transaction(function * () {
+    woah.transaction(function * () {
       var test = yield db.Test.findAll();
       expect(test).to.be.empty;
     }).then(() => {
@@ -38,7 +38,7 @@ describe('transactions', () => {
   });
 
   it('creates an instance then retrieves it', (done) => {
-    db.transaction(function * () {
+    woah.transaction(function * (t) {
       var instance = yield db.Test.create({
         name: 'Bottles',
         age: 99,
@@ -48,6 +48,29 @@ describe('transactions', () => {
       expect(retrieved.length).to.equal(1);
     }).then(() => {
       done();
+    });
+  });
+
+  it('rolls back', (done) => {
+    woah.transaction(function * (t) {
+      var instance = yield db.Test.create({
+        name: 'Bottles',
+        age: 99,
+        sex: 'Male'
+      }, { transaction: t });
+      var instance2 = yield db.Test.create({
+        name: 9
+      }, { transaction: t });
+    }).then(() => {
+      throw "Should not succeed..";
+    }).catch((err) => {
+      var retrieved;
+      woah.transaction(function * () {
+        retrieved = yield db.Test.findAll();
+      }).then(() => {
+        expect(retrieved).to.be.empty;
+        done();
+      });
     });
   });
 });
