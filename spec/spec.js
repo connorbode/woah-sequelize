@@ -20,18 +20,10 @@ afterEach(done => {
 });
 
 describe('transactions', () => {
-  it('runs an empty transaction', (done) => {
-    woah.transaction(function * () {
-      
-    }).then(() => {
-      done();
-    });
-  });
-
   it('runs a query on an empty db', (done) => {
     woah.transaction(function * () {
       var test = yield db.Test.findAll();
-      expect(test).to.be.empty;
+      assert.equal(test.length, 0);
     }).then(() => {
       done();
     });
@@ -68,7 +60,7 @@ describe('transactions', () => {
       woah.transaction(function * () {
         retrieved = yield db.Test.findAll();
       }).then(() => {
-        expect(retrieved).to.be.empty;
+        assert.equal(retrieved.length, 0);
         done();
       });
     });
